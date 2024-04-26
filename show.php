@@ -76,8 +76,7 @@
     $stmt = $db->prepare($sql);
     $stmt->bindParam(':postId', $postId, PDO::PARAM_INT);
     $stmt->execute();
-  
-    
+   
     //投稿データを保存する箱
     $commentbox = [];
     //レコード取得
@@ -85,10 +84,20 @@
       $commentbox[] = [
         'body' => $row['body']
       ];
+
+    //コメント削除
+    $commentId = $_GET['id'];
+    $sql = "DELETE FROM comments WHERE id = :commentId";
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':commentId', $commentId, PDO::PARAM_INT);
+    $stmt->execute();
   ?>
-    <p>コメント：<?php echo nl2br($row['body'])?><input type="submit" name="btn_submit" value="削除">
+    <p>コメント：<?php echo nl2br($row['body'])?><a href="show.php?id=<?php $_GET['id']?>">削除</a>
     <?php
     endwhile;
+
+
+
   ?>
 </div>
 </body>
