@@ -28,10 +28,10 @@
 
     //条件をチェックする
     if(empty($_POST['body'])){
-        echo $alert = "<script type='text/javascript'>alert('コメントを記入してください。');</script>";
+      echo $alert = "<script type='text/javascript'>alert('コメントを記入してください。');</script>";
 
     }elseif(strlen($_POST['body']) > 50){
-        echo $alert = "<script type='text/javascript'>alert('コメントは50文字以下で記入してください');</script>";
+      echo $alert = "<script type='text/javascript'>alert('コメントは50文字以下で記入してください');</script>";
         
     }else{
       $stmt = $db->prepare("INSERT INTO comments (message_id, body, date) VALUES (:message_id, :body, now())");
@@ -42,9 +42,7 @@
       exit();
     }
   }
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -54,41 +52,42 @@
   <title>show</title>
 </head>
 <body>
+  <p>タイトル</p>
+  <?php echo $row['title']?>
+  <p>内容</p>
+  <?php echo $row['body']?>
+  <p>投稿日時：<?php echo $row['date']?></p>
+  <p><a href="write.php">一覧に戻る</a></p>
 
-<p>タイトル</p>
-<?php echo $row['title']?>
-<p>内容</p>
-<?php echo $row['body']?>
-<p>投稿日時：<?php echo $row['date']?></p>
-<p><a href="write.php">一覧に戻る</a></p>
-
-<div class="comment_confirmation">
-  <p class="modal_title" >この投稿にコメントしますか？</p>
-  <form method="post" action="show.php?id=<?php echo $postId; ?>">
-    <textarea class="textarea" name="body"></textarea>
-    <div class="post_btn">
-      <button class="btn btn-outline-danger" type="submit" name="comment" value="comment">コメント</button>
-    </div>
-  </form>
-  <?php
-    //コメント表示
-    $sql = "SELECT id,body FROM comments WHERE message_id = :postId";
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':postId', $postId, PDO::PARAM_INT);
-    $stmt->execute();
-   
-    //投稿データを保存する箱
-    $commentbox = [];
-    //レコード取得
-    while($row = $stmt->fetch()):
-      $commentbox[] = [
-        'body' => $row['body']
-      ];
-  ?>
-    <p>コメント：<?php echo nl2br($row['body'])?><a href="delete.php?id=<?php echo $_GET['id'] ?>">削除</a>
+  <div class="comment_confirmation">
+    <p class="modal_title" >この投稿にコメントしますか？</p>
+    
+    <form method="post" action="show.php?id=<?php echo $postId; ?>">
+      <textarea class="textarea" name="body"></textarea>
+      <div class="post_btn">
+        <button class="btn btn-outline-danger" type="submit" name="comment" value="comment">コメント</button>
+      </div>
+    </form>
+ 
     <?php
-    endwhile;
-  ?>
-</div>
+      //コメント表示
+      $stmt = $db->prepare("SELECT id,body FROM comments WHERE message_id = :postId");
+      $stmt->bindParam(':postId', $postId, PDO::PARAM_INT);
+      $stmt->execute();
+    
+      //投稿データを保存する箱
+      $commentbox = [];
+      //レコード取得
+      while($row = $stmt->fetch()):
+        $commentbox[] = [
+          'id' => $row['id'],
+          'body' => $row['body']
+        ];
+    ?> 
+        <p>コメント：<?php echo nl2br($row['body'])?><a href="delete.php?id=<?php echo $row['id'] ?>">削除</a>
+    <?php
+      endwhile;
+    ?>
+  </div>
 </body>
 </html>

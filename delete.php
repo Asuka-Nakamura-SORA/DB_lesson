@@ -5,6 +5,14 @@
   $dbh = new PDO("mysql:host=localhost; dbname=bbs; charset=utf8", "$user", "$password");
 
   $id = $_GET['id'];
+  $stmt = $dbh->prepare("SELECT message_id FROM comments WHERE id = :id");
+  $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+  $stmt->execute();
+
+    //レコード取得
+  $row = $stmt->fetch();
+  
+
   $stmt = $dbh->prepare("DELETE FROM comments WHERE id = :id");
   $stmt->bindParam(':id', $id, PDO::PARAM_INT);
   $stmt->execute();
@@ -14,16 +22,12 @@
   // $stmt->execute(array(':id' => $_GET["id"]));
   // echo "削除しました。";
 
-  $stmt = $dbh->prepare("SELECT message_id FROM comments WHERE id = :id");
-  $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-  $stmt->execute();
+
 
   // $stmt = $db->prepare("SELECT id,body FROM comments WHERE message_id = :postId");
   // $stmt->bindParam(':postId', $postId, PDO::PARAM_INT);
   // $stmt->execute();
 
-  //レコード取得
-  $row = $stmt->fetch();
 
 ?>
 
