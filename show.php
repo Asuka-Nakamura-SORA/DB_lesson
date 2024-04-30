@@ -84,20 +84,10 @@
       $commentbox[] = [
         'body' => $row['body']
       ];
-
-    //コメント削除
-    $commentId = $_GET['id'];
-    $sql = "DELETE FROM comments WHERE id = :commentId";
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':commentId', $commentId, PDO::PARAM_INT);
-    $stmt->execute();
   ?>
-    <p>コメント：<?php echo nl2br($row['body'])?><a href="show.php?id=<?php $_GET['id']?>">削除</a>
+    <p>コメント：<?php echo nl2br($row['body'])?><a href="delete.php?id=<?php echo $_GET['id'] ?>">削除</a>
     <?php
     endwhile;
-
-
-
   ?>
 </div>
 </body>
